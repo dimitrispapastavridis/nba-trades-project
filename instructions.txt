@@ -1,0 +1,17 @@
+docker compose up -d
+
+# going to localhost:80 or <server's ip>:80 in our browser we can see 
+# the pdadmin interface. we can login with the username (user@domain.com) 
+# and password (SuperSecret) we set up for pgadmin environment variables in the .yaml file.
+# now, to connect to the postgres database we need to fill in the following details
+#   host name/address: postgres-db (postgres container name defined in .yaml)
+#   port: 5432
+#   username: postgres (defined in .yaml)
+#   password: docker   (defined in .yaml)
+#
+# after the first minute you will see the 'tennis' table and every minute 
+# more data will be added to the table (you need to refresh the database tab)
+
+#important note!
+#use 'docker compose up -d --build'
+#to rebuild the image every time you change your script

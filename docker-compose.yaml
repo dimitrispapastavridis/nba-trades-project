@@ -1,0 +1,39 @@
+version: '3'    
+
+services:                                                   
+  postgresdb:                                            
+    image: postgres 
+    container_name: postgres-db           
+
+    ports: 
+      - 5432:5432  
+
+    environment: 
+      - POSTGRES_PASSWORD=docker 
+
+    volumes: 
+      - postgres-data:/var/lib/postgresql/data 
+                                       
+  pgadmin:                                          
+    image: dpage/pgadmin4 
+
+    ports:  
+      - 8080:80 
+
+    environment: 
+      - PGADMIN_DEFAULT_EMAIL=dimitris_papast@hotmail.com 
+      - PGADMIN_DEFAULT_PASSWORD=dimitrispapast  
+
+    depends_on: 
+      - postgresdb 
+
+  scraper:
+    build: .
+    volumes:
+      - /csv:/app/csv
+    depends_on:
+      - postgresdb
+
+
+volumes:                 
+  postgres-data: 
