@@ -72,7 +72,9 @@ team_name_map = {
 
 df['TEAM_RECEIVING_PLAYER'] = df['TEAM_RECEIVING_PLAYER'].replace(team_name_map)
 
-df = df[['Transaction_Type','GroupSort','PLAYER_SLUG','TEAM_RECEIVING_PLAYER','TEAM_SENDING_PLAYER','TRANSACTION_DATE','year','month']]
+df['synced_at'] = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+
+df = df[['Transaction_Type','GroupSort','PLAYER_SLUG','TEAM_RECEIVING_PLAYER','TEAM_SENDING_PLAYER','TRANSACTION_DATE','year','month','synced_at']]
 
 df.columns = [col.lower() for col in df.columns]
 
@@ -100,7 +102,8 @@ sql = """
     team_sending_player VARCHAR(50),
     transaction_date DATE,
     year INT,
-    month INT
+    month INT,
+    synced_at VARCHAR(50)
 );
 """
 
