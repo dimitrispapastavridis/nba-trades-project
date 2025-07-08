@@ -113,8 +113,15 @@ sql = """
 with engine.connect().execution_options(autocommit=True) as conn:
     query = conn.execute(text(sql))
 
-with engine.connect().execution_options(autocommit=True) as conn:
-    df.to_sql('nba_trades', con=conn, if_exists='append', index= False)
+existing = pd.read_sql("SELECT groupsort FROM nba_trades", con)
+
+df_new = df[~df['groupsort'].isin(existing['groupsort'])]
+
+if len(df_new) != 0:
+    df_new.to_sql("nba_trades", con=con, if_exists="append", index=False)
+    print(f"Has been added {len(df_new)} new records")
+else:
+    print("No new entries")
 
 #optional
 print(pd.read_sql_query("""
