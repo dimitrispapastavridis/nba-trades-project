@@ -88,9 +88,9 @@ else:
 
 engine = create_engine(
 'postgresql+psycopg2:'
-'//postgres:'          # username for postgres
-'docker'              # password for postgres
-'@postgresdb:5432/'        # postgres server name and the exposed port
+'//postgres:'        
+'docker'              
+'@postgresdb:5432/'        
 'postgres')
 
 con = engine.connect()
@@ -123,7 +123,6 @@ if len(df_new) != 0:
 else:
     print("No new entries")
 
-#optional
 print(pd.read_sql_query("""
 select * from nba_trades
 """, con))
