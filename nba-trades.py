@@ -76,7 +76,11 @@ df['synced_at'] = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
 
 df['synced_at'] = pd.to_datetime(df['synced_at'])
 
-df = df[['Transaction_Type','GroupSort','PLAYER_SLUG','TEAM_RECEIVING_PLAYER','TEAM_SENDING_PLAYER','TRANSACTION_DATE','year','month','synced_at']]
+df['contract'] = df['TRANSACTION_DESCRIPTION'].apply(lambda x : x.split('to a')[1][:-1].strip() if 'to a' in x else None)
+
+df['contract'] = df['contract'].apply(lambda x : x.replace('n ','Converted to ') if x == 'n NBA Contract' else x)
+
+df = df[['Transaction_Type','GroupSort','PLAYER_SLUG','contract','TEAM_RECEIVING_PLAYER','TEAM_SENDING_PLAYER','TRANSACTION_DATE','year','month','synced_at']]
 
 df.columns = [col.lower() for col in df.columns]
 
@@ -88,9 +92,9 @@ else:
 
 engine = create_engine(
 'postgresql+psycopg2:'
-'//postgres:'        
-'docker'              
-'@postgresdb:5432/'        
+'//postgres:'    
+'docker'            
+'@postgresdb:5432/'      
 'postgres')
 
 con = engine.connect()
@@ -100,6 +104,7 @@ sql = """
     transaction_type VARCHAR(50),
     groupsort VARCHAR(50),
     player_slug VARCHAR(50),
+    contract VARCHAR(50),
     team_receiving_player VARCHAR(50),
     team_sending_player VARCHAR(50),
     transaction_date DATE,
@@ -109,7 +114,6 @@ sql = """
 );
 """
 
-# execute the 'sql' query
 with engine.connect().execution_options(autocommit=True) as conn:
     query = conn.execute(text(sql))
 
@@ -123,6 +127,7 @@ if len(df_new) != 0:
 else:
     print("No new entries")
 
+#optional
 print(pd.read_sql_query("""
 select * from nba_trades
 """, con))
